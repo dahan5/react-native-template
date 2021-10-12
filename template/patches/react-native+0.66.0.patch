@@ -1,0 +1,59 @@
+diff --git a/node_modules/react-native/jest/setup.js b/node_modules/react-native/jest/setup.js
+index 912b5f7..b601cf8 100644
+--- a/node_modules/react-native/jest/setup.js
++++ b/node_modules/react-native/jest/setup.js
+@@ -332,6 +332,13 @@ jest
+         isRTL: false,
+         doLeftAndRightSwapInRTL: true,
+       }),
++      localeIdentifier: 'en_US',
++    },
++    SettingsManager: {
++      settings: {
++        AppleLocale: 'en-US',
++        AppleLanguages: ['en-US'],
++      },
+     },
+   }))
+   .mock('../Libraries/NativeComponent/NativeComponentRegistry', () => {
+diff --git a/node_modules/react-native/scripts/react-native-xcode.sh b/node_modules/react-native/scripts/react-native-xcode.sh
+index b5f7544..203a9ab 100755
+--- a/node_modules/react-native/scripts/react-native-xcode.sh
++++ b/node_modules/react-native/scripts/react-native-xcode.sh
+@@ -81,7 +81,7 @@ fi
+ 
+ # Find path to Node
+ # shellcheck source=/dev/null
+-source "$RN_DIR/scripts/find-node.sh"
++source "$REACT_NATIVE_DIR/scripts/find-node.sh"
+ 
+ # check and assign NODE_BINARY env
+ # shellcheck source=/dev/null
+diff --git a/node_modules/react-native/scripts/react_native_pods.rb b/node_modules/react-native/scripts/react_native_pods.rb
+index e55b6f5..c4e0f2d 100644
+--- a/node_modules/react-native/scripts/react_native_pods.rb
++++ b/node_modules/react-native/scripts/react_native_pods.rb
+@@ -222,15 +222,14 @@ def __apply_Xcode_12_5_M1_post_install_workaround(installer)
+   # Apple Silicon builds require a library path tweak for Swift library discovery to resolve Swift-related "symbol not found".
+   # Note: this was fixed via https://github.com/facebook/react-native/commit/eb938863063f5535735af2be4e706f70647e5b90
+   # Keeping this logic here but commented out for future reference.
+-  #
+-  # installer.aggregate_targets.each do |aggregate_target|
+-  #   aggregate_target.user_project.native_targets.each do |target|
+-  #     target.build_configurations.each do |config|
+-  #       config.build_settings['LIBRARY_SEARCH_PATHS'] = ['$(SDKROOT)/usr/lib/swift', '$(inherited)']
+-  #     end
+-  #   end
+-  #   aggregate_target.user_project.save
+-  # end
++  installer.aggregate_targets.each do |aggregate_target|
++    aggregate_target.user_project.native_targets.each do |target|
++      target.build_configurations.each do |config|
++        config.build_settings['LIBRARY_SEARCH_PATHS'] = ['$(SDKROOT)/usr/lib/swift', '$(inherited)']
++      end
++    end
++    aggregate_target.user_project.save
++  end
+ 
+   # Flipper podspecs are still targeting an older iOS deployment target, and may cause an error like:
+   #   "error: thread-local storage is not supported for the current target"
